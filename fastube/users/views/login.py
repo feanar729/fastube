@@ -1,37 +1,39 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.views.generic import View
 
 
-class SignupView(View):
+class LoginView(View):
 
     def get(self, request, *args, **kwargs):
         return render(
             request,
-            "users/signup.html",
+            "users/login.html",
             context={},
         )
 
     def post(self, request, *args, **kwargs):
         username = request.POST.get("username")
         password = request.POST.get("password")
-        phonenumber = request.POST.get("phonenumber")
 
-        # TODO: validations ( username )
+        next_url = request.POST.get("next_url") or reverse("users:login")  # FIXME: redirect to home
 
-        user = get_user_model().objects.create_user(
+        user = authenticate(
             username=username,
             password=password,
-            phonenumber=phonenumber,
         )
 
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            settings.SIGNUP_SUCCESS_MESSAGE,
-        )
+        if user:
+            login(request, user)
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                settings.LOGIN_SUCCESS_MESSAGE,
+            )
+
+            return redirect(next_url)
 
         return redirect(reverse("users:login"))

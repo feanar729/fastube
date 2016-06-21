@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 PROJECT_ROOT_DIR = os.path.dirname(BASE_DIR)
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'pipeline',
+    'social.apps.django_app.default',
     'users',
 ]
 
@@ -67,6 +70,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },
@@ -122,8 +128,66 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "fastube", "static"),
+]
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_ROOT_DIR, "dist", "static")
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+    'pipeline.finders.PipelineFinder',
+)
+
+PIPELINE = {
+    'STYLESHEETS': {
+        'fastube': {
+            'source_filenames': (
+              'css/application.css',
+              'css/partials/*.css',
+            ),
+            'output_filename': 'css/fastube.css',
+        }
+    }
+}
 
 
 # Auth
 AUTH_USER_MODEL = "users.User"
+
+LOGIN_URL = "/login/"
+
+SIGNUP_SUCCESS_MESSAGE = "성공적으로 회원가입 되었습니다."
+LOGIN_SUCCESS_MESSAGE = "성공적으로 로그인 되었습니다."
+LOGOUT_SUCCESS_MESSAGE = "성공적으로 로그아웃 되었습니다."
+
+AUTHENTICATION_BACKENDS = [
+    "social.backends.facebook.FacebookOAuth2",
+    "social.backends.kakao.KakaoOAuth2",
+
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+SOCIAL_AUTH_FACEBOOK_KEY = "237373486648488"
+SOCIAL_AUTH_FACEBOOK_SECRET = "9a31e73646f72c20d061a81a9563d139"
+
+SOCIAL_AUTH_KAKAO_KEY = "20fd3acbcf04cbb3d46839f06e3f7f6d"
+SOCIAL_AUTH_KAKAO_SECRET = "3cd433fd15f6c112c36181e5a9380372"
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details'
+)
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/login/"
