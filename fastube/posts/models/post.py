@@ -24,6 +24,11 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # TODO: youtube original url
+    def get_youtube_origin_url(self):
+        return "http://www.youtube.com/watch?v={video_id}".format(
+            video_id=self.video_id,
+        )
+
     # TODO: youtube embed source code
 
     def __str__(self):
