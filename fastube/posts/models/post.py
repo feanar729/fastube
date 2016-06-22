@@ -28,6 +28,7 @@ class Post(models.Model):
         return "http://www.youtube.com/watch?v={video_id}".format(
             video_id=self.video_id,
         )
+    youtube_original_url = property(get_youtube_original_url)
 
     # TODO: youtube embed source code
 
