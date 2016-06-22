@@ -19,7 +19,7 @@ class PostCreateView(View):
         title = request.POST.get("title")
         content = request.POST.get("content")
 
-        post = request.uesr.post_set.create(
+        post = request.user.post_set.create(
             video_id=video_id,
             title=title,
             content=content,
