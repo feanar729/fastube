@@ -1,3 +1,4 @@
 Django
 Django-pipeline
 python-social-auth
+hashids
