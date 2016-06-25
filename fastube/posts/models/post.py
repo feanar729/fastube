@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.db import models
+
 from users.models import User
 
 
@@ -29,6 +30,12 @@ class Post(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_youtube_thumbnail_image_url(self):
+        from posts.utils.youtube import get_youtube_thumbnail_image_url\
+            as get_youtube_thumbnail_image_url_from_video_id
+        return get_youtube_thumbnail_image_url_from_video_id(self.video_id)
+    youtube_thumbnail_image_url = property(get_youtube_thumbnail_image_url)
 
     def get_youtube_original_url(self):
         from posts.utils.youtube import get_youtube_original_url as get_youtube_original_url_from_video_id
