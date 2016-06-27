@@ -26,4 +26,7 @@ urlpatterns = [
 
     url(r'^', include("users.urls", namespace="users")),
     url(r'^posts/', include("posts.urls", namespace="posts")),
+
+    url(r'^api/', include("fastube.urls.api", namespace="api")),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
