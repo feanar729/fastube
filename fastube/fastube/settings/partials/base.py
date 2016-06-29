@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'users',
     'posts',
+    'tags',
 
     'rest_framework',
 ]
@@ -154,8 +155,18 @@ PIPELINE = {
             ),
             'output_filename': 'css/fastube.css',
         }
+    },
+
+    'JAVASCRIPT': {
+        'posts': {
+            'source_filenames': (
+              'js/posts.js',
+            ),
+            'output_filename': 'js/posts.js',
+        }
     }
 }
+
 
 # Media
 MEDIA_URL = "/media/"
